@@ -1,8 +1,8 @@
 from handler import connection
-from handler.consumer import MessageHandler
+from handler.producer import MessageProducer
 
 connection = connection.start_connection()
 
-h = MessageHandler(connection, 3)
+h = MessageProducer(connection)
 h.send('urls', 'hello my dear')
 connection.close()

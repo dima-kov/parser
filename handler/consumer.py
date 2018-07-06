@@ -19,11 +19,3 @@ class MessageHandler(object):
 
     def on_message(self, channel, method_frame, header_frame, body):
         print(channel, method_frame, header_frame, body)
-
-    def send(self, queue_name, body):
-        self.channel.queue_declare(queue_name)
-        self.channel.basic_publish(
-            exchange='',
-            routing_key=queue_name,
-            body=body
-        )
