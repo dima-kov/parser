@@ -1,10 +1,7 @@
 
 import pika
 
-USER, PASSWORD = 'bhkakfli', 'LP4wTuHX0d9FHtQ-IPNTlfm2wRzt2lhe'
-URL = 'wolverine.rmq.cloudamqp.com'
-
-VIRTUAL_HOST = 'bhkakfli'
+from config.settings import URL, USER, PASSWORD, VIRTUAL_HOST
 
 
 def start_connection():
