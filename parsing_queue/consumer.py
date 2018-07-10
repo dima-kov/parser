@@ -1,6 +1,3 @@
-import asyncio
-from math import factorial
-
 from parsing_queue import QUEUE_NAME as DEFAULT_QUEUE_NAME
 
 
@@ -28,4 +25,3 @@ class MessageConsumer(object):
         print("Message received: ", body)
         task = self.event_loop.create_task(self.parser.parse(body.decode("utf-8")))
         self.event_loop.run_until_complete(task)
-            # run_until_complete(asyncio.wait())
