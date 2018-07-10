@@ -10,14 +10,15 @@ rabbitMQ_conn = start_connection()
 
 queue_producer = MessageProducer(rabbitMQ_conn)
 parser = Parser(queue_producer)
-queue_consumer = MessageConsumer(rabbitMQ_conn, parser)
 
-START_KEYWORDS = ['IT', 'programming', 'AI', 'machine learning', 'technologies', 'startup', 'investing', 'blockchain']
+START_KEYWORDS = ['IT', 'programming', 'AI', 'machine+learning', 'technologies', 'startup', 'investing', 'blockchain']
 
 for keyword in START_KEYWORDS:
     queue_producer.send("https://www.google.com.ua/search?q={}+articles".format(keyword))
 print("Sent urls with start keywords searches")
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(asyncio.gather(queue_consumer.handle_input(QUEUE_NAME)))
+queue_consumer = MessageConsumer(rabbitMQ_conn, parser, event_loop=loop)
+
+loop.run_until_complete(asyncio.wait(queue_consumer.handle_input(QUEUE_NAME)))
 loop.close()
