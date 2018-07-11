@@ -1,5 +1,5 @@
-from parsing_queue import connection
-from parsing_queue.producer import MessageProducer
+from pqueue import connection
+from pqueue.producer import MessageProducer
 
 connection = connection.start_connection()
 

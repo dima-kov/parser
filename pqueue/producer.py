@@ -1,7 +1,7 @@
-from parsing_queue import QUEUE_NAME as DEFAULT_QUEUE_NAME
+from pqueue import QUEUE_NAME as DEFAULT_QUEUE_NAME
 
 
-class MessageProducer(object):
+class MessageProducer():
     connection = None
 
     def __init__(self, connection):

@@ -14,11 +14,12 @@ class Parser(object):
     def __init__(self, message_producer):
         self._message_producer = message_producer
 
-    async def parse(self, url):
-        await self._parse_url(url)
+    def parse(self, url):
+        print("New url to parse")
+        self._parse_url(url)
+        print('______________End______________')
 
-    async def _parse_url(self, url):
-        print("Real parsing started")
+    def _parse_url(self, url):
         if url in PARSED_PAGES:
             print("Already parsed")
             return
@@ -28,11 +29,14 @@ class Parser(object):
         PARSED_PAGES.append(url)
 
     def _load_url(self, url):
+        print("URL loading ...")
         return requests.get(SPLASH_URL.format(url))
 
     def _queueing_links_from_html(self, html):
         links = self._extract_links_from_html(html)
+        print("Extracted all links. Sending to queue.")
         self._send_links_to_queue(links)
+        print("Sent")
 
     def _extract_links_from_html(self, html):
         soup = BeautifulSoup(html, 'html.parser')
