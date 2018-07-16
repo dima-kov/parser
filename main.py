@@ -1,30 +1,14 @@
-import config
-from pqueue.connection import start_connection
-from pqueue.consumer import MessageConsumer
-from pqueue.producer import MessageProducer
+from handler import QueueHandlerThread
 from parser import Parser
-from storage import GoogleSheetsStorage
 
+from pqueue import prepopulate_queue
 
-def populate_start_queue():
-    for keyword in config.START_KEYWORDS:
-        queue_producer.send("https://www.google.com.ua/search?q={}+articles".format(keyword))
-    print("Sent urls with start keywords searches")
+queue = prepopulate_queue()
 
-
-rabbitMQ = start_connection()
-
-google_sheets = GoogleSheetsStorage()
-queue_producer = MessageProducer(rabbitMQ)
-parser = Parser(queue_producer, google_sheets)
-message_consumer_thread = MessageConsumer(rabbitMQ, parser, config.QUEUE_NAME)
-
-populate_start_queue()
+parser = Parser(queue)
+queue_handler_thread = QueueHandlerThread(parser, queue)
 
 try:
-    message_consumer_thread.start()
+    queue_handler_thread.start()
 except KeyboardInterrupt:
-    message_consumer_thread.close()
-    rabbitMQ.close()
-
-
+    queue.join()
