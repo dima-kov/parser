@@ -39,17 +39,20 @@ class Parser(object):
         soup = BeautifulSoup(html, 'html.parser')
         for link in soup.find_all('a'):
             link_href = link.get('href')
-            if link_href is not None:
+            if link_href is not None and link_href not in ['#', '', ' ']:
                 yield self._normalize_url(link_href, domain)
 
     def _send_links_to_queue(self, urls):
         for url in urls:
-            if url is not None:
-                self._queue.put(url)
-                Page.objects.create(url=url)
+            self._queue.put(url)
+            Page.objects.get_or_create(url=url)
 
     def _normalize_url(self, url, domain):
-        url = domain + url if url[0] == '/' else url
+        if url[0] == '/':
+            url = domain + url
+
+        if url[0:2] == '//':
+            url = domain + url[1:]
         return self._remove_hash(url)
 
     @staticmethod

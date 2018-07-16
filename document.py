@@ -19,6 +19,9 @@ class PageQuerySet(QuerySet):
         page.save()
         return page
     
+    def already_parsed(self, **kwargs):
+        return self.filter(**kwargs, parsed__ne=None).count() > 0
+
     def get_non_parsed(self):
         return self.filter(parsed=None)
     
@@ -33,8 +36,8 @@ class PageQuerySet(QuerySet):
 
 class Page(document.Document):
     url = fields.StringField(required=True, max_length=600, unique=True)
-    created = fields.DateTimeField(default=datetime.datetime.utcnow)
     parsed = fields.DateTimeField(required=False)
+    created = fields.DateTimeField(default=datetime.datetime.utcnow)
 
     meta = {'queryset_class': PageQuerySet}
 
