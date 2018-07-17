@@ -4,13 +4,13 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
 from config import SPLASH_URL
-from document import Page
+from storage_facade import StorageFacade
 
 
 class Parser(object):
 
-    def __init__(self, queue):
-        self._queue = queue
+    def __init__(self, storage_facade:StorageFacade):
+        self.storage_facade = storage_facade
 
     def parse(self, url):
         print("New url to parse")
@@ -20,9 +20,7 @@ class Parser(object):
     def _parse_by_url(self, url):
         response = self._load_url(url)
         self._queueing_links_from_html(url, response.text)
-        page_document = Page.objects.get_or_create(url=url)
-        page_document.parsed_now()
-        page_document.save()
+        self.storage_facade.url_parsed(url)
 
     @staticmethod
     def _load_url(url):
@@ -38,28 +36,31 @@ class Parser(object):
     def _extract_links_from_html(self, html, domain):
         soup = BeautifulSoup(html, 'html.parser')
         for link in soup.find_all('a'):
-            link_href = link.get('href')
-            if link_href is not None and link_href not in ['#', '', ' ']:
-                yield self._normalize_url(link_href, domain)
+            yield self._normalize_url(link.get('href', ''), domain)
 
     def _send_links_to_queue(self, urls):
         for url in urls:
-            self._queue.put(url)
-            Page.objects.get_or_create(url=url)
+            self.storage_facade.new_url(url)
 
     def _normalize_url(self, url, domain):
-        if url[0] == '/':
-            url = domain + url
+        """
+            Appends domain if link without it.
+            Deletes hash.
+        """
+        return self._append_domain(url, domain)
 
-        if url[0:2] == '//':
-            url = domain + url[1:]
-        return self._remove_hash(url)
+    @staticmethod
+    def _append_domain(url, domain):
+        old = url
+        if url.startswith('/'):
+            return domain + url
+
+        if url.startswith('//'):
+            return domain + url[1:]
+        print("appending domain: ", old, "new:", url)
+        return url
 
     @staticmethod
     def _get_domain(url):
+        print("domain: ", urlparse(url).netloc)
         return urlparse(url).netloc
-
-    @staticmethod
-    def _remove_hash(url):
-        parsed = urlparse(url)
-        return '{}://{}{}?{}'.format(parsed.scheme, parsed.netloc, parsed.path, parsed.query)

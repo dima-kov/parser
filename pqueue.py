@@ -11,14 +11,6 @@ class ParsingQueue(object):
         self.prepopulate()
 
     def put(self, url):
-        if Page.objects.already_parsed(url=url):
-            print(url, 'is already parsed. Cancel appending to queue')
-            return
-
-        if self.url_contains_blacklist(url):
-            print('Blacklisted url')
-            return
-
         self.__queue.put(url)
 
     def get(self):
@@ -42,14 +34,8 @@ class ParsingQueue(object):
     def populate_with_searches(self):
         print("Populating from search:")
         for keyword in config.START_KEYWORDS:
-            page = Page(url="https://www.google.com.ua/search?q={}+articles".format(keyword))
+            page = Page()
+            page.url = "https://www.google.com.ua/search?q={}+articles".format(keyword)
             page.save()
             self.put(page.url)
 
-    @staticmethod
-    def url_contains_blacklist(url):
-        for domain in config.BLACKLIST_DOMAINS:
-            if domain in url:
-                print(domain, url)
-                return True
-        return False

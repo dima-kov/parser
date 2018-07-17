@@ -1,15 +1,8 @@
 import datetime
 
-from mongoengine import connection, QuerySet
+from mongoengine import QuerySet
 from mongoengine import document
 from mongoengine import fields
-
-from config import MONGO_DB_NAME
-from config import MONGO_HOST
-from config import MONGO_PORT
-
-
-connection.connect(MONGO_DB_NAME, host=MONGO_HOST, port=MONGO_PORT)
 
 
 class PageQuerySet(QuerySet):
@@ -18,9 +11,9 @@ class PageQuerySet(QuerySet):
         page = Page(**kwargs)
         page.save()
         return page
-    
-    def already_parsed(self, **kwargs):
-        return self.filter(**kwargs, parsed__ne=None).count() > 0
+
+    def exists(self, **kwargs):
+        return self.filter(**kwargs) .count() > 0
 
     def get_non_parsed(self):
         return self.filter(parsed=None)
@@ -35,7 +28,7 @@ class PageQuerySet(QuerySet):
 
 
 class Page(document.Document):
-    url = fields.StringField(required=True, max_length=600, unique=True)
+    url = fields.StringField(required=True, max_length=2083, unique=True)
     parsed = fields.DateTimeField(required=False)
     created = fields.DateTimeField(default=datetime.datetime.utcnow)
 
