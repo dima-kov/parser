@@ -1,12 +1,3 @@
-QUEUE_NAME = 'urls'
-
-# RabbitMQ
-
-USER, PASSWORD = 'bhkakfli', 'LP4wTuHX0d9FHtQ-IPNTlfm2wRzt2lhe'
-URL = 'wolverine.rmq.cloudamqp.com'
-
-VIRTUAL_HOST = 'bhkakfli'
-
 # Splash
 SPLASH_URL = 'http://localhost:8050/render.html?url={}'
 
@@ -14,6 +5,12 @@ SPLASH_URL = 'http://localhost:8050/render.html?url={}'
 START_KEYWORDS = ['IT', 'programming', 'AI', 'machine+learning', 'technologies', 'startup', 'investing',
                   'blockchain']
 
+BLACKLIST_DOMAINS = [
+    'google.com.ua/setprefs', 'maps.google.com.ua', 'youtube.com', 'mail.google.com',
+    'drive.google.com', 'plus.google.com', 'translate.google.com', 'photos.google.com',
+    'docs.google.com', 'hangouts.google.com', 'keep.google.com', 'accounts.google.com',
+    'support.google.com'
+]
 
 # MongoDB
 MONGO_DB_NAME = 'parser_db'
