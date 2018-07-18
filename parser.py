@@ -45,19 +45,19 @@ class Parser(object):
     def _normalize_url(self, url, domain):
         """
             Appends domain if link without it.
-            Deletes hash.
         """
         return self._append_domain(url, domain)
 
     @staticmethod
     def _append_domain(url, domain):
-        old = url
         if url.startswith('/'):
+            print("Url starts with slash: ", url, "new: ", domain + url)
             return domain + url
 
         if url.startswith('//'):
+            print("Url starts with double slash: ", url, "new: ", domain + url[1:])
             return domain + url[1:]
-        print("appending domain: ", old, "new:", url)
+
         return url
 
     @staticmethod

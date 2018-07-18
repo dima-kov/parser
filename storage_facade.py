@@ -16,9 +16,11 @@ class StorageFacade(object):
         self.__queue = queue
 
     def new_url(self, url):
-        validate_err = self.validate_url(url)
-        if validate_err is not None:
-            return validate_err
+        try:
+            self.validate_url(url)
+        except ValueError as e:
+            print("URL error: ", url, e)
+            return
 
         self.__mongo.create_url(url)
         self.__queue.put(url)
@@ -32,14 +34,25 @@ class StorageFacade(object):
 
     def validate_url(self, url):
         if url in ['#', '', ' ']:
-            return "URL is a hash or empty string. Abort"
+            raise ValueError("URL is a hash or empty string. Abort")
 
-        if self.__mongo.is_exists(url):
-            return 'URL is already in queue. Abort'
+        if url.startswith('#'):
+            raise ValueError("URL is a anchor. Abort")
+
+        if url.startswith('javascript'):
+            raise ValueError("URL is a javascript function. Abort")
+
+        if url.startswith('mailto'):
+            raise ValueError("URL is a mailto link. Abort")
+
+        if len(url) > 2000:
+            raise ValueError("URL is too long. Abort")
 
         if self.url_with_blacklisted_domain(url):
-            return 'Blacklisted url. Abort'
-        return None
+            raise ValueError("Blacklisted url. Abort")
+
+        if self.__mongo.is_exists(url):
+            raise ValueError("URL is already in queue. Abort")
 
     @staticmethod
     def url_with_blacklisted_domain(url):

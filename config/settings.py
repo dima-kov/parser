@@ -9,7 +9,7 @@ BLACKLIST_DOMAINS = [
     'google.com.ua/setprefs', 'maps.google.com.ua', 'youtube.com', 'mail.google.com',
     'drive.google.com', 'plus.google.com', 'translate.google.com', 'photos.google.com',
     'docs.google.com', 'hangouts.google.com', 'keep.google.com', 'accounts.google.com',
-    'support.google.com', 'webcache.googleusercontent.com'
+    'support.google.com', 'webcache.googleusercontent.com', 'api', 'store.google.com',
 ]
 
 # MongoDB

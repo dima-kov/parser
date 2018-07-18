@@ -1,3 +1,5 @@
+import time
+
 from mongoengine import connection
 
 from config import MONGO_DB_NAME
@@ -33,10 +35,17 @@ mongo = PageMongoStorage()
 facade = StorageFacade(mongo, queue)
 
 parser = Parser(facade)
-queue_handler_thread = QueueHandlerThread(parser, facade)
 
+start = time.time()
+threads_num = 4
 try:
-    queue_handler_thread.start()
+    for i in range(threads_num):
+        queue_handler_thread = QueueHandlerThread(parser, facade)
+        queue_handler_thread.start()
+    while True:
+        time.sleep(100)
 except KeyboardInterrupt:
     print("EXITS")
+    print("Threads: ", threads_num)
+    print("Time: ", time.time() - start)
     queue.join()

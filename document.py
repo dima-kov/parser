@@ -28,7 +28,7 @@ class PageQuerySet(QuerySet):
 
 
 class Page(document.Document):
-    url = fields.StringField(required=True, max_length=2083, unique=True)
+    url = fields.StringField(required=True, max_length=6000, unique=True)
     parsed = fields.DateTimeField(required=False)
     created = fields.DateTimeField(default=datetime.datetime.utcnow)
 
