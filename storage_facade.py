@@ -29,6 +29,9 @@ class StorageFacade(object):
         self.__mongo.url_parsed(url)
         self.__queue.task_done()
 
+    def queue_empty(self):
+        return self.__queue.empty()
+
     def get_url_from_queue(self):
         return self.__queue.get()
 

@@ -1,3 +1,5 @@
+import asyncio
+
 import requests
 
 from bs4 import BeautifulSoup
@@ -9,29 +11,28 @@ from storage_facade import StorageFacade
 
 class Parser(object):
 
-    def __init__(self, storage_facade:StorageFacade):
+    def __init__(self, storage_facade: StorageFacade, loop):
         self.storage_facade = storage_facade
+        self.loop = loop
 
-    def parse(self, url):
+    async def parse(self, url):
         print("New url to parse")
-        self._parse_by_url(url)
+        await self._parse_by_url(url)
         print('______________End______________')
 
-    def _parse_by_url(self, url):
-        response = self._load_url(url)
+    async def _parse_by_url(self, url):
+        response = await self._load_url(url)
         self._queueing_links_from_html(url, response.text)
         self.storage_facade.url_parsed(url)
 
-    @staticmethod
-    def _load_url(url):
-        print("URL loading ...")
-        return requests.get(SPLASH_URL.format(url))
+    async def _load_url(self, url):
+        print("URL loading... Suspending...")
+        return await self.loop.run_in_executor(None, requests.get, SPLASH_URL.format(url))
 
     def _queueing_links_from_html(self, url, html):
         links = self._extract_links_from_html(html, self._get_domain(url))
-        print("Extracted all links. Sending to queue.")
+        print("Extracted all links. Sending to queue from URL {} .".format(url))
         self._send_links_to_queue(links)
-        print("Sent")
 
     def _extract_links_from_html(self, html, domain):
         soup = BeautifulSoup(html, 'html.parser')
@@ -55,8 +56,8 @@ class Parser(object):
             return domain + url
 
         if url.startswith('//'):
-            print("Url starts with double slash: ", url, "new: ", domain + url[1:])
-            return domain + url[1:]
+            print("Url starts with double slash: ", url, "new: ", url[1:])
+            return url[1:]
 
         return url
 

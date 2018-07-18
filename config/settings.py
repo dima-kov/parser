@@ -2,14 +2,19 @@
 SPLASH_URL = 'http://localhost:8050/render.html?url={}'
 
 # Parser
-START_KEYWORDS = ['IT', 'programming', 'AI', 'machine+learning', 'technologies', 'startup', 'investing',
-                  'blockchain']
+START_KEYWORDS = [
+    'IT', 'programming', 'AI', 'machine+learning', 'technologies', 'startup', 'investing',
+    'blockchain', 'products+entrepreneurship', 'products', 'design', 'team+making'
+    'self+driving+cars', 'robots', 'space', 'tesla', 'electro', 'enery', 'making+desicions',
+    'motivation', 'mars+exploration', 'data+science', 'big+data',
+]
 
 BLACKLIST_DOMAINS = [
-    'google.com.ua/setprefs', 'maps.google.com.ua', 'youtube.com', 'mail.google.com',
+    'google.com.ua/setprefs', 'maps.google.com', 'youtube.com', 'mail.google.com',
     'drive.google.com', 'plus.google.com', 'translate.google.com', 'photos.google.com',
     'docs.google.com', 'hangouts.google.com', 'keep.google.com', 'accounts.google.com',
     'support.google.com', 'webcache.googleusercontent.com', 'api', 'store.google.com',
+    'books.google.com',
 ]
 
 # MongoDB

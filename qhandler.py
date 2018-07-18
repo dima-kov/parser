@@ -1,15 +1,12 @@
-import threading
-
 from storage_facade import StorageFacade
 
 
-class QueueHandlerThread(threading.Thread):
+class QueueHandler(object):
 
     parser = None
     storage_facade = None
 
     def __init__(self, parser, storage_facade: StorageFacade):
-        threading.Thread.__init__(self)
 
         if parser is None:
             raise ValueError("Parser cannot be None")
@@ -17,15 +14,14 @@ class QueueHandlerThread(threading.Thread):
         self.storage_facade = storage_facade
         print("Queue Handler inited")
 
-    def run(self):
-        print("Queue Handler started")
-        self.handle()
+    async def run(self):
+        await self.handle()
 
-    def handle(self):
-        while True:
+    async def handle(self):
+        while not self.storage_facade.queue_empty():
             queue_item = self.storage_facade.get_url_from_queue()
-            self.handle_queue_message(queue_item)
+            await self.handle_queue_message(queue_item)
 
-    def handle_queue_message(self, message):
+    async def handle_queue_message(self, message):
         print("Message received: ", message)
-        self.parser.parse(message)
+        await self.parser.parse(message)

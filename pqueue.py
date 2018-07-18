@@ -11,10 +11,13 @@ class ParsingQueue(object):
         self.prepopulate()
 
     def put(self, url):
-        self.__queue.put(url)
+        self.__queue.put_nowait(url)
 
     def get(self):
-        return self.__queue.get()
+        return self.__queue.get_nowait()
+
+    def empty(self):
+        return self.__queue.empty()
 
     def task_done(self):
         return self.__queue.task_done()
