@@ -17,7 +17,10 @@ class PageQuerySet(QuerySet):
 
     def get_non_parsed(self):
         return self.filter(parsed=None)
-    
+
+    def get_parsed(self):
+        return self.filter(parsed__ne=None)
+
     def get_or_create(self, url):
         pages = self.filter(url=url)
         if pages.count() == 0:

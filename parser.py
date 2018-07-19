@@ -54,8 +54,8 @@ class Parser(object):
     @staticmethod
     def _append_domain(url, domain):
         if url.startswith('//'):
-            print("Url starts with double slash: ", url, "new: ", url[1:])
-            return url[1:]
+            print("Url starts with double slash: ", url, "new: ", url[2:])
+            return url[2:]
 
         if url.startswith('/'):
             print("Url starts with slash: ", url, "new: ", domain + url)

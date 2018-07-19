@@ -21,7 +21,7 @@ class StorageFacade(object):
         except ValueError as e:
             print("URL error: ", url, e)
             return
-
+        print("URL is ok: ", url)
         self.__mongo.create_url(url)
         self.__queue.put(url)
 
@@ -47,6 +47,9 @@ class StorageFacade(object):
 
         if url.startswith('mailto'):
             raise ValueError("URL is a mailto link. Abort")
+
+        if url.startswith('tel'):
+            raise ValueError("URL is a telephone link. Abort")
 
         if len(url) > 2000:
             raise ValueError("URL is too long. Abort")
