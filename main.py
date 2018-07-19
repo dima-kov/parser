@@ -40,9 +40,11 @@ facade = StorageFacade(mongo, queue)
 parser = Parser(facade)
 q_handler = QueueHandler(loop, parser, facade)
 
+start = time.time()
 try:
     q_handler.run()
 except KeyboardInterrupt:
     print("Gracefully exit")
+    print("Time: ", start - time.time())
     q_handler.close()
     loop.close()
