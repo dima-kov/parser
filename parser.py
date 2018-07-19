@@ -1,5 +1,3 @@
-import asyncio
-
 import requests
 
 from bs4 import BeautifulSoup
@@ -55,13 +53,13 @@ class Parser(object):
 
     @staticmethod
     def _append_domain(url, domain):
-        if url.startswith('/'):
-            print("Url starts with slash: ", url, "new: ", domain + url)
-            return domain + url
-
         if url.startswith('//'):
             print("Url starts with double slash: ", url, "new: ", url[1:])
             return url[1:]
+
+        if url.startswith('/'):
+            print("Url starts with slash: ", url, "new: ", domain + url)
+            return domain + url
 
         return url
 
