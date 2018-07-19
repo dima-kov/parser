@@ -37,12 +37,12 @@ queue = ParsingQueue()
 mongo = PageMongoStorage()
 facade = StorageFacade(mongo, queue)
 
-parser = Parser(facade, loop)
+parser = Parser(facade)
+q_handler = QueueHandler(loop, parser, facade)
 
-threads = 20
 try:
-    workers = [asyncio.ensure_future(QueueHandler(parser, facade).run()) for i in range(threads)]
-    loop.run_until_complete(asyncio.wait(workers))
+    q_handler.run()
 except KeyboardInterrupt:
+    print("Gracefully exit")
+    q_handler.close()
     loop.close()
-    print("START EXIT")

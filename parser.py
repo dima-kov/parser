@@ -11,9 +11,10 @@ from storage_facade import StorageFacade
 
 class Parser(object):
 
-    def __init__(self, storage_facade: StorageFacade, loop):
+    loop = None
+
+    def __init__(self, storage_facade: StorageFacade):
         self.storage_facade = storage_facade
-        self.loop = loop
 
     async def parse(self, url):
         print("New url to parse")
@@ -28,6 +29,9 @@ class Parser(object):
     async def _load_url(self, url):
         print("URL loading... Suspending...")
         return await self.loop.run_in_executor(None, requests.get, SPLASH_URL.format(url))
+
+    def set_loop(self, loop):
+        self.loop = loop
 
     def _queueing_links_from_html(self, url, html):
         links = self._extract_links_from_html(html, self._get_domain(url))
